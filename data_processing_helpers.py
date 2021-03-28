@@ -59,7 +59,6 @@ def next_month(year_month):
 def request_articles(search_term, begin_date, end_date, api_key):
     """
     Gets NYTimes API response for given search.
-    WARNING: I think this search currently returns more than just NYTimes articles.
 
     Args:
         search_term: A string to be used as search term.
@@ -70,10 +69,7 @@ def request_articles(search_term, begin_date, end_date, api_key):
     Returns:
         A request for this search.
     """
-    return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_term}&begin_date={begin_date}&end_date={end_date}&api-key={api_key}")
-    #return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch \
-    #       .json?fq={search_term}&begin_date={begin_date}&end_date={end_date} \
-    #       &api-key={api_key}")
+    return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_term}&fq=source:(\"The New York Times\")&begin_date={begin_date}&end_date={end_date}&api-key={api_key}")
 
 def get_hits(request_):
     """
