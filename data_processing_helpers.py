@@ -59,7 +59,6 @@ def next_month(year_month):
 def request_articles(search_term, begin_date, end_date, api_key):
     """
     Gets NYTimes API response for given search.
-    WARNING: I think this search currently returns more than just NYTimes articles.
 
     Args:
         search_term: A string to be used as search term.
@@ -70,10 +69,7 @@ def request_articles(search_term, begin_date, end_date, api_key):
     Returns:
         A request for this search.
     """
-    return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_term}&begin_date={begin_date}&end_date={end_date}&api-key={api_key}")
-    #return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch \
-    #       .json?fq={search_term}&begin_date={begin_date}&end_date={end_date} \
-    #       &api-key={api_key}")
+    return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_term}&fq=source:(\"The New York Times\")&begin_date={begin_date}&end_date={end_date}&api-key={api_key}")
 
 def get_hits(request_):
     """
@@ -132,6 +128,9 @@ def monthly_hits(search_term, begin_month, end_month, api_key):
         begin_month: String in the format YYYYMM.
         end_month: String in the format YYYYMM.
         api_key: NYTimes Developer API key.
+
+    Returns:
+        List.
     """
     search_date_hits = []
     i = 0
@@ -152,3 +151,20 @@ def monthly_hits(search_term, begin_month, end_month, api_key):
         time.sleep(6)
     return search_date_hits  
 
+def write_hits_to_file(search_term, begin_month, end_month, api_key):
+    """
+    Writes monthly hits to file.
+
+    Args:
+        search_term:
+        begin_month: String in the format YYYYMM.
+        end_month: String in the format YYYYMM.
+        api_key: NYTimes Developer API key.
+
+    Returns:
+        List.
+    """
+    search_date_hits = monthly_hits(search_term, begin_month, end_month, api_key)
+    for entry in search_date_hits:
+        write_data_to_file(entry[0], entry[1], entry[2])
+    return search_date_hits
