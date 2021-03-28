@@ -144,11 +144,11 @@ def monthly_hits(search_term, begin_month, end_month, api_key):
                 search_term,
                 current_month,
                 get_hits(request_articles(search_term, current_month + \
-                "01", end_month + days_in_month(current_month), api_key))
+                "01", current_month + days_in_month(current_month), api_key))
             ]
         )
         i += 1
         current_month = next_month(current_month)
-        #time.sleep(2)
+        time.sleep(6)
     return search_date_hits  
 
