@@ -43,9 +43,9 @@ def monthly_hits(search_term, begin_month, end_month, api_key):
 
 
 
-def collect_monthly_headlines(search_query, yyyymm_start, yyyymm_end, api_key):
+def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
     """
-    Collect the headlines over a period of time for a given search
+    Collect the headlines and hits over a period of time for a given search
     
     Args:
         search_query: a string that represents the search term
@@ -56,37 +56,46 @@ def collect_monthly_headlines(search_query, yyyymm_start, yyyymm_end, api_key):
         api_key: a string that represents the user's public api key
         
     Returns:
-        headline_list: a list containing a list of healines for each month
-        between the start and end date, inclusive, for each hit on the search
-        term
+        headlines_and_hits: a list containing a list of the following info:
+        ['country name', 'month range', 'hits', 'headlines'] for each month
+        indicated by the time frame for the inputs
     """
-    headline_list = []
+    headlines_and_hits = []
+    current_month = yyyymm_start
     
-    list_monthly_hits = monthly_hits(search_query, yyyymm_start, yyyymm_end, api_key)
-    
-    for index in range(len(list_monthly_hits)):
-        current_month = list_monthly_hits[index][1]
-        num_hits = list_monthly_hits[index][2]
+    while current_month != next_month(yyyymm_end):
+        month_all_info = []
+        month_headlines = []
+        request = request_articles(search_query, current_month + \
+                "01", current_month + days_in_month(current_month), api_key)
+        num_hits = get_hits(request)
         num_pages = math.ceil(num_hits / 10)
-        monthly_headlines = []
+        page_headlines = pyjq.all('.response .docs[] .headline .main', request.json())
         
-        for page in range(num_pages):
-            begin_date = current_month + "01"
-            end_date = current_month + days_in_month(current_month)
-            request = requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_query}&fq=source:(\"The New York Times\")&begin_date={begin_date}&end_date={end_date}&page={page}&api-key={api_key}")
-            
-            page_headlines = pyjq.all('.response .docs[] .headline .main', request.json())
-            monthly_headlines += page_headlines
-            
-            time.sleep(6)
-            
-        headline_list.append(monthly_headlines)
+        month_all_info += [search_query, current_month, num_hits]
+        month_headlines += page_headlines
         
-    return headline_list
+        time.sleep(6)
+        if num_pages >= 1:
+            for page in range(1, num_pages):
+                begin_date = current_month + "01"
+                end_date = current_month + days_in_month(current_month)
+                request = requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_query}&fq=source:(\"The New York Times\")&begin_date={begin_date}&end_date={end_date}&page={page}&api-key={api_key}")
+        
+                page_headlines = pyjq.all('.response .docs[] .headline .main', request.json())
+                month_headlines += page_headlines
+                time.sleep(6)
+                
+            month_all_info.append(month_headlines)
+            
+        headlines_and_hits.append(month_all_info)
+        current_month = next_month(current_month)
+        
+    return headlines_and_hits
 
-def write_hits_to_file(search_term, begin_month, end_month, api_key):
+def write_hits_and_headlines_to_file(search_term, begin_month, end_month, api_key):
     """
-    Writes monthly hits to file.
+    Writes monthly hits and headlines to file.
 
     Args:
         search_term:
@@ -97,17 +106,15 @@ def write_hits_to_file(search_term, begin_month, end_month, api_key):
     Returns:
         List.
     """
-    search_date_hits = monthly_hits(search_term, begin_month, end_month, api_key)
+    search_date_hits_and_headlines = collect_headlines_and_hits(search_term, begin_month, end_month, api_key)
     
-    
-    
-    for entry in search_date_hits:
+    for entry in search_date_hits_and_headlines:
         monthyear = entry[1]
         
         date = f'{monthyear[4:]}-{monthyear[0:4]}'
         
-        write_data_to_file(entry[0], date, entry[2])
-    return search_date_hits
+        write_data_to_file(entry[0], date, entry[2], entry[3])
+    return search_date_hits_and_headlines
 
 def create_bar_chart(country_name):
     """
