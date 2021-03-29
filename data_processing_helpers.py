@@ -215,4 +215,44 @@ def create_bar_chart(country_name):
     plt.title(f'Number of Hits in NYTimes Articles per Month for {country_name}')
     
     plt.show()
+
+def collect_monthly_headlines(search_query, yyyymm_start, yyyymm_end, api_key):
+    """
+    Collect the headlines over a period of time for a given search
+    
+    Args:
+        search_query: a string that represents the search term
+        yyyymm_start: a string that represents the start date in the YYYYMM
+        format
+        yyyymm_end: a string that represents the end date in the YYYYMM
+        format
+        api_key: a string that represents the user's public api key
+        
+    Returns:
+        headline_list: a list containing a list of healines for each month
+        between the start and end date, inclusive, for each hit on the search
+        term
+    """
+    headline_list = []
+    
+    list_monthly_hits = monthly_hits(search_query, yyyymm_start, yyyymm_end, api_key)
+    
+    for index in range(len(list_monthly_hits)):
+        current_month = list_monthly_hits[index][1]
+        num_hits = list_monthly_hits[index][2]
+        num_pages = math.ceil(num_hits / 10)
+        monthly_headlines = []
+        
+        for page in range(num_pages):
+            begin_date = current_month + "01"
+            end_date = current_month + days_in_month(current_month)
+            request = requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_query}&fq=source:(\"The New York Times\")&begin_date={begin_date}&end_date={end_date}&page={page}&api-key={api_key}")
             
+            page_headlines = pyjq.all('.response .docs[] .headline .main', request.json())
+            monthly_headlines += page_headlines
+            
+            time.sleep(6)
+            
+        headline_list.append(monthly_headlines)
+        
+    return headline_list
