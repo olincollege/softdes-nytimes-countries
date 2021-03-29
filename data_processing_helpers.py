@@ -4,6 +4,9 @@ import pyjq
 import csv
 import pandas as pd
 import time
+from os import path
+import matplotlib.pyplot as plt
+import math
 
 month_days_general = {
     "01": "31",
@@ -97,27 +100,34 @@ def write_data_to_file(country_name, date, num_hits):
     Returns:
         No return value
     """
-    existing_data = pd.read_csv('country_data.csv')
-
-    information = pd.DataFrame([[country_name, date, num_hits]], columns = ['Country Name', 'Date Range', 'Number of Hits'])
+    information = pd.DataFrame([[country_name, date, num_hits]], columns = ['Country Name', 'MM-YYYY', 'Number of Hits'])
     
-    if existing_data.dropna().empty:
-        information.to_csv('country_data.csv', mode = 'w', header = True, index = False)
+    filepath = f'CountryData/{country_name}_data.csv'
+    
+    if path.exists(filepath):
+        existing_data = pd.read_csv(filepath)
+    
+        if existing_data.dropna().empty:
+            information.to_csv(filepath, mode = 'w', header = True, index = False)
+        else:
+            information.to_csv(filepath, mode = 'a', header = False, index = False)
+            
     else:
-        information.to_csv('country_data.csv', mode = 'a', header = False, index = False)
+        information.to_csv(filepath, mode = 'w', header = True, index = False)
         
-def reset_data_entries():
+def reset_data_entries(country_name):
     """
-    Reset the data in the csv file so that the columns contain no data
+    Reset the data in a country's csv file so that the columns contain no data
     
     Args:
-        No arguments
+        country_name: a string representing the name of the country whos file
+        will be reset
     Returns:
         No return value
     """
-    new_table = pd.DataFrame([['', '', '']], columns = ['Country Name', 'Date Range', 'Number of Hits'])
+    new_table = pd.DataFrame([['', '', '']], columns = ['Country Name', 'MM-YYYY', 'Number of Hits'])
     
-    new_table.to_csv('country_data.csv', mode = 'w', header = True, index = False)
+    new_table.to_csv(f'CountryData/{country_name}_data.csv', mode = 'w', header = True, index = False)
 
 def monthly_hits(search_term, begin_month, end_month, api_key):
     """
@@ -165,6 +175,44 @@ def write_hits_to_file(search_term, begin_month, end_month, api_key):
         List.
     """
     search_date_hits = monthly_hits(search_term, begin_month, end_month, api_key)
+    
+    
+    
     for entry in search_date_hits:
-        write_data_to_file(entry[0], entry[1], entry[2])
+        monthyear = entry[1]
+        
+        date = f'{monthyear[4:]}-{monthyear[0:4]}'
+        
+        write_data_to_file(entry[0], date, entry[2])
     return search_date_hits
+
+def create_bar_chart(country_name):
+    """
+    Display a bar chart of hits per month for a country
+    
+    Args:
+        country_name: a string that is the name of the country for which to
+        visualize number of hits
+    Returns:
+        No return value
+    """
+    country_data = pd.read_csv(f'CountryData/{country_name}_data.csv')
+    
+    num_entries = len(country_data['MM-YYYY'])
+    
+    plt.rc('axes', titlesize = 20)
+    plt.rc('axes', labelsize = 15)
+    plt.rc('xtick', labelsize = 10)
+    plt.rc('ytick', labelsize = 10)
+    
+    plt.figure(figsize = (math.ceil(num_entries / 3), 5))
+    plt.bar(country_data['MM-YYYY'], country_data['Number of Hits'])
+    
+    plt.xticks(rotation = 45)
+    
+    plt.xlabel('Time Frame (MM-YYYY)')
+    plt.ylabel('Number of Hits')
+    plt.title(f'Number of Hits in NYTimes Articles per Month for {country_name}')
+    
+    plt.show()
+            
