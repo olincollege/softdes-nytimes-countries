@@ -86,7 +86,7 @@ def get_hits(request_):
     """
     return pyjq.all(".response .meta .hits", request_.json())[0]
 
-def write_data_to_file(country_name, date, num_hits):
+def write_data_to_file(country_name, date, num_hits, headlines):
     """
     Write collected data to csv file
     
@@ -97,10 +97,11 @@ def write_data_to_file(country_name, date, num_hits):
         collected
         num_hits: an int representing the number of hits from a nytimes article
         search api for a given country and time period
+        headlines: a list containing all of the headlines for the month
     Returns:
         No return value
     """
-    information = pd.DataFrame([[country_name, date, num_hits]], columns = ['Country Name', 'MM-YYYY', 'Number of Hits'])
+    information = pd.DataFrame([[country_name, date, num_hits, headlines]], columns = ['Country Name', 'MM-YYYY', 'Number of Hits', 'Month\'s Headlines'])
     
     filepath = f'CountryData/{country_name}_data.csv'
     
@@ -125,6 +126,6 @@ def reset_data_entries(country_name):
     Returns:
         No return value
     """
-    new_table = pd.DataFrame([['', '', '']], columns = ['Country Name', 'MM-YYYY', 'Number of Hits'])
+    new_table = pd.DataFrame([['', '', '', '']], columns = ['Country Name', 'MM-YYYY', 'Number of Hits', 'Month\'s Headlines'])
     
     new_table.to_csv(f'CountryData/{country_name}_data.csv', mode = 'w', header = True, index = False)
