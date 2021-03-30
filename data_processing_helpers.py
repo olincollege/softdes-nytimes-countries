@@ -129,3 +129,27 @@ def reset_data_entries(country_name):
     new_table = pd.DataFrame([['', '', '', '']], columns = ['Country Name', 'MM-YYYY', 'Number of Hits', 'Month\'s Headlines'])
     
     new_table.to_csv(f'CountryData/{country_name}_data.csv', mode = 'w', header = True, index = False)
+    
+def headline_list_to_string(country_name, yearmonth):
+    """
+    Create one long string out of a list of strings, where the list of strings
+    is one month's headlines
+    
+    Args:
+        country_name: a string representing the name of the country
+        yearmonth: a string representing the month of interest, in YYYYMM format
+        
+    Returns:
+        headline_text: a string that is all of the headlines merged into one string
+    """
+    data_frame = pd.read_csv(f'CountryData/{country_name}_data.csv')
+    
+    date = f'{yearmonth[4:]}-{yearmonth[0:4]}'
+    
+    location = data_frame.index[data_frame['MM-YYYY'] == date][0]
+    
+    headlines = data_frame['Month\'s Headlines'][location]
+    
+    headline_text = headlines.strip("[]")
+    
+    return headline_text
