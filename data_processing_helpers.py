@@ -150,6 +150,33 @@ def headline_list_to_string(country_name, yearmonth):
     
     headlines = data_frame['Month\'s Headlines'][location]
     
-    headline_text = headlines.strip("[]")
+    headline_text = headlines.strip("['']")
+    headline_text = headline_text.replace("', '", " ")
+    headline_text = headline_text.replace(chr(8217)+"s", "")
+    headline_text = headline_text.replace("'s", "")
     
     return headline_text
+
+def all_headlines_in_string(country_name):
+    """
+    Create one long string out of all the headlines collected for a country
+    over the entire time frame
+    
+    Args:
+        country_name: a string representing the name of the country
+    Returns:
+        all_text: a string that contains all the headlines merged in one string
+    """
+    country_data = pd.read_csv(f'CountryData/{country_name}_data.csv')
+    
+    month_headline_strings = []
+    
+    for item in country_data['MM-YYYY']:
+        year = item[3:]
+        month = item[0:2]
+        
+        month_headline_strings.append(headline_list_to_string(country_name, year + month))
+        
+    all_text = " ".join(month_headline_strings)
+    
+    return all_text

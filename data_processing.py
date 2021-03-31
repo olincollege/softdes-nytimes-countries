@@ -8,6 +8,9 @@ from os import path
 import matplotlib.pyplot as plt
 import math
 from data_processing_helpers import *
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+import numpy as np
+from PIL import Image
 
 def monthly_hits(search_term, begin_month, end_month, api_key):
     """
@@ -146,3 +149,53 @@ def create_bar_chart(country_name):
     
     plt.show()
 
+def create_word_cloud_one_month(country_name, yearmonth):
+    """
+    Create a wordcloud based on the headlines collected about the country for
+    the given month
+    
+    Args:
+        country_name: a string representing the name of the country for which
+        to create the wordcloud
+        yearmonth: a string representing the month for which to get headlines,
+        in YYYYMM format
+    Returns:
+        No return value
+    """
+    text = headline_list_to_string(country_name, yearmonth)
+    num_words = len(text.split())
+    
+    background_flag_mask = np.array(Image.open(f"CountryFlags/{country_name}_flag.png"))
+    
+    wordcloud = WordCloud(mask=background_flag_mask, background_color="white", stopwords = STOPWORDS, max_words = num_words).generate(text)
+    colors = ImageColorGenerator(background_flag_mask)
+    
+    colored_cloud = wordcloud.recolor(color_func = colors)
+    
+    plt.figure(figsize = (20, 20))
+    plt.axis('off')
+    plt.imshow(colored_cloud)
+    
+def create_word_cloud_all(country_name):
+    """
+    Create a wordcloud based on all the headlines collected about the country
+    
+    Args:
+        country_name: a string representing the name of the country for which
+        to create the wordcloud
+    Returns:
+        No return value
+    """
+    text = all_headlines_in_string(country_name)
+    num_words = len(text.split())
+    
+    background_flag_mask = np.array(Image.open(f"CountryFlags/{country_name}_flag.png"))
+    
+    wordcloud = WordCloud(mask=background_flag_mask, background_color="white", stopwords = STOPWORDS, max_words = num_words).generate(text)
+    colors = ImageColorGenerator(background_flag_mask)
+    
+    colored_cloud = wordcloud.recolor(color_func = colors)
+    
+    plt.figure(figsize = (20, 20))
+    plt.axis('off')
+    plt.imshow(colored_cloud)
