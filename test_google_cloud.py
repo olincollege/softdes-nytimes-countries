@@ -1,18 +1,20 @@
-# Run in terminal that has GOOGLE_APPLICATION_CREDENTIALS
-#`python test_google_cloud`
-# Imports the Google Cloud client library
-from google.cloud import language_v1
-#bash export GOOGLE_APPLICATION_CREDENTIALS="home/softdes/Downloads/southern-ring-309118-4067f1965873.json"
+import requests
+import json
+import os
 
-# Instantiates a client
-client = language_v1.LanguageServiceClient()
+path_lila = "/home/lila/Documents/schoolwork/softdes/google-api-key"
+api_path = "https://language.googleapis.com/v1/documents:analyzeSentiment?key="
 
-# The text to analyze
-text = u"Hello, world!"
-document = language_v1.Document(content=text, type_=language_v1.Document.Type.PLAIN_TEXT)
+with open(os.path.abspath(path_lila), "r") as f:
+    api_key = f.readline()
 
-# Detects the sentiment of the text
-sentiment = client.analyze_sentiment(request={'document': document}).document_sentiment
 
-print("Text: {}".format(text))
-print("Sentiment: {}, {}".format(sentiment.score, sentiment.magnitude))
+def request_sentiment(text):
+    document = {
+    "type": "PLAIN_TEXT",
+    "language": "en-us",
+    "content": text
+    }
+
+    response = requests.get(api_path + api_key, document)
+    return response
