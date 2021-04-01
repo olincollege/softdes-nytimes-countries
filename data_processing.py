@@ -119,7 +119,7 @@ def write_hits_and_headlines_to_file(search_term, begin_month, end_month, api_ke
         write_data_to_file(entry[0], date, entry[2], entry[3])
     return search_date_hits_and_headlines
 
-def create_bar_chart(country_name):
+def create_scatter_plot(country_name):
     """
     Display a bar chart of hits per month for a country
     
@@ -138,8 +138,8 @@ def create_bar_chart(country_name):
     plt.rc('xtick', labelsize = 10)
     plt.rc('ytick', labelsize = 10)
     
-    plt.figure(figsize = (math.ceil(num_entries / 3), 5))
-    plt.bar(country_data['MM-YYYY'], country_data['Number of Hits'])
+    plt.figure(figsize = (math.ceil(num_entries / 2), 5))
+    plt.scatter(country_data['MM-YYYY'], country_data['Number of Hits'])
     
     plt.xticks(rotation = 45)
     

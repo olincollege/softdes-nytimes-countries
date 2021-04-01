@@ -28,10 +28,11 @@ def days_in_month(year_month):
     Finds number of days in a month with a given year.
 
     Args:
-       year_month: String in format YYYYMM.
+       year_month: String representing target month in format YYYYMM.
     
     Returns:
-        A two-character string for the number of days in that month.
+        A two-character string for the number of days in that month in format
+        DD
     """
     year = year_month[0:4]
     month = year_month[4:]
@@ -42,13 +43,13 @@ def days_in_month(year_month):
 
 def next_month(year_month):
     """
-    Gives next month.
+    Give the month following the input month
 
     Args:
-        year_month: String in format YYYYMM.
+        year_month: String representing the month in format YYYYMM.
     
     Returns:
-        String in format YYYYMM.
+        String representing the following month in format YYYYMM.
     """
     year = year_month[0:4]
     month = year_month[4:]
@@ -61,30 +62,36 @@ def next_month(year_month):
 
 def request_articles(search_term, begin_date, end_date, api_key):
     """
-    Gets NYTimes API response for given search.
+    Gets NYTimes Article Search API response for given search term and date
+    range
 
     Args:
-        search_term: A string to be used as search term.
-        begin_date: A string for date in format YYYYMMDD.
-        end_date: A string for date in format YYYYMMDD.
-        api_key: A string for your NYTimes Developer API key.
+        search_term: A string representing the search term.
+        begin_date: A string representing the start date in format YYYYMMDD.
+        end_date: A string representing the end date in format YYYYMMDD.
+        api_key: A string representing a NYTimes Developer API key.
     
     Returns:
-        A request for this search.
+        The NYTimes Article Search API response for this search.
     """
-    return requests.get(f"https://api.nytimes.com/svc/search/v2/articlesearch.json?q={search_term}&fq=source:(\"The New York Times\")&begin_date={begin_date}&end_date={end_date}&api-key={api_key}")
+    return requests.get(f"https://api.nytimes.com/svc/search/v2/" \
+                        f"articlesearch.json?q={search_term}&fq=" \
+                        f"source:(\"The New York Times\")&begin_" \
+                        f"date={begin_date}&end_date={end_date}&" \
+                        f"api-key={api_key}")
 
-def get_hits(request_):
+def get_hits(response_):
     """
-    Finds number of results for request.
+    Finds number of results for a NYTimes API request.
 
     Args:
-        request_: A request from NYTimes API.
+        request_: The results of a request from the NYTimes article seach API
     
     Returns:
-        A positive integer representing number of hits.
+        A positive integer representing number of hits, as indicated by the
+        API response
     """
-    return pyjq.all(".response .meta .hits", request_.json())[0]
+    return pyjq.all(".response .meta .hits", response_.json())[0]
 
 def write_data_to_file(country_name, date, num_hits, headlines):
     """
@@ -152,8 +159,8 @@ def headline_list_to_string(country_name, yearmonth):
     
     headline_text = headlines.strip("['']")
     headline_text = headline_text.replace("', '", " ")
-    headline_text = headline_text.replace(chr(8217)+"s", "")
-    headline_text = headline_text.replace("'s", "")
+    headline_text = headline_text.replace(chr(8217)+"s", "")#
+    headline_text = headline_text.replace("'s", "")#
     
     return headline_text
 
