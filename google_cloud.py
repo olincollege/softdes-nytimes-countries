@@ -105,4 +105,4 @@ def sentiment_and_magnitude_to_csv(country_name):
     
     updated_dataframe = country_dataframe
     
-    updated_dataframe.to_csv(f'CountryData/{country_name}_data.csv')
+    updated_dataframe.to_csv(f'CountryData/{country_name}_data.csv', index = False)
