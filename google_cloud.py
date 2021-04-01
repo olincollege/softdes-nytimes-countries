@@ -38,43 +38,6 @@ def find_sentiment(response):
     magnitude = pyjq.all(".documentSentiment .magnitude", response.json())[0]
     return [sentiment, magnitude]
 
-
-def add_sentiment_and_mag_to_csv(csv_):
-    """
-    Does not work DO NOT USE
-    """
-    data_frame = pd.read_csv(csv_)
-    print(data_frame.head())
-    #data_frame.set_value(0, "Country Name", "changed")
-    data_frame.insert(3, "Sentiment", "a")
-    data_frame.insert(4, "Magnitude", "b")
-
-def sentiment_to_csv(country_name, index):
-    """
-    DOES NOT WORK DO NOT USE
-
-    Analyzes a month's headlines and writes sentiment and magnitude to csv.
-
-    WARNING: cvs should already be created and add_sentiment_and_mag_to_csv
-    should be run before this function.
-
-    Args:
-        country_name: A string representing the name of the country
-        index: An integer refering to a row of the country's csv.
-
-    Returns:
-        None.
-    """
-    data_frame = pd.read_csv(f'CountryData/{country_name}_data.csv')
-    headlines = data_frame['Month\'s Headlines'][index]
-    headline_text = headlines.strip("['']")
-    headline_text = headlines.replace("', '", " ")
-
-    sentiment_magnitude = find_sentiment(request_sentiment(headline_text))
-    
-    data_frame.set_value(index, "Sentiment (-1 to 1)", sentiment_magnitude[0])
-
-
 def sentiment_and_magnitude_to_csv(country_name):
     """
     Conduct sentiment analysis on monthly headlines for a given country and
