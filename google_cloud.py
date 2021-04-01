@@ -3,11 +3,13 @@ import json
 import os
 import pyjq
 import pandas as pd
+import data_processing_helpers
 
-path_lila = "/home/lila/Documents/schoolwork/softdes/google-api-key"
+#path_lila = "/home/lila/Documents/schoolwork/softdes/google-api-key"
+path_alex = "/home/softdes/Desktop/google-api-key"
 api_path = "https://language.googleapis.com/v1/documents:analyzeSentiment?key="
 
-with open(os.path.abspath(path_lila), "r") as f:
+with open(os.path.abspath(path_alex), "r") as f:
     api_key = f.readline()
 
 
@@ -73,4 +75,34 @@ def sentiment_to_csv(country_name, index):
     data_frame.set_value(index, "Sentiment (-1 to 1)", sentiment_magnitude[0])
 
 
+def sentiment_and_magnitude_to_csv(country_name):
+    """
+    Conduct sentiment analysis on monthly headlines for a given country and
+    update the country's data file with the corresponding scores
     
+    Args:
+        country_name: a string representing the name of the country whose
+        headlines will be analyzed
+    Return:
+        No return value
+    """
+    country_dataframe = pd.read_csv(f'CountryData/{country_name}_data.csv')
+    
+    sentiment_scores = []
+    magnitudes = []
+    
+    for item in country_dataframe["MM-YYYY"]:
+        year = item[3:]
+        month = item[0:2]
+        text = data_processing_helpers.headline_list_to_string(country_name, year + month)
+        analysis = find_sentiment(request_sentiment(text))
+        
+        sentiment_scores.append(analysis[0])
+        magnitudes.append(analysis[1])
+        
+    country_dataframe["Sentiment Score (-1 to 1)"] = sentiment_scores
+    country_dataframe["Magnitude"] = magnitudes
+    
+    updated_dataframe = country_dataframe
+    
+    updated_dataframe.to_csv(f'CountryData/{country_name}_data.csv')
