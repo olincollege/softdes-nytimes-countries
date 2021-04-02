@@ -1,3 +1,9 @@
+"""
+This file contains helper functions for data collecting and data processing.
+
+The functions in this file deal with constructing NYTimes article seach API
+requests and writing the data collected from the responses into csv files.
+"""
 from os import path
 import pyjq
 import pandas as pd
