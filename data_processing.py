@@ -1,3 +1,11 @@
+"""
+This file deals with organizing the collected data and visualizing it
+
+The functions in this file utilize functions from the helper file to
+make sure that the data is in the correct format to be read/written, and
+the last several functions deal with creating scatter plots, word clouds,
+and bubble charts.
+"""
 import time
 import math
 import matplotlib.pyplot as plt
@@ -47,8 +55,6 @@ def monthly_hits(search_term, begin_month, end_month, api_key):
         current_month = next_month(current_month)
         time.sleep(6)
     return search_date_hits
-
-
 
 def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
     """

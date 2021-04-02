@@ -1,3 +1,12 @@
+"""
+This file deals with analyzing the collected article headlines using Google
+Cloud's Natural Language API
+
+The functions in this file access the data that is already collected in the
+csv data files, namely the headlines, and constructing the data so that it can
+be sent to Google's language analysis API, rewriting it to the csv files after
+analysis is completed.
+"""
 import json
 import os
 import pyjq
