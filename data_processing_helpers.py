@@ -1,12 +1,13 @@
-import requests
-import json
-import pyjq
-import csv
-import pandas as pd
-import time
+"""
+This file contains helper functions for data collecting and data processing.
+
+The functions in this file deal with constructing NYTimes article seach API
+requests and writing the data collected from the responses into csv files.
+"""
 from os import path
-import matplotlib.pyplot as plt
-import math
+import pyjq
+import pandas as pd
+import requests
 
 month_days_general = {
     "01": "31",
@@ -29,7 +30,7 @@ def days_in_month(year_month):
 
     Args:
        year_month: String representing target month in format YYYYMM.
-    
+
     Returns:
         A two-character string for the number of days in that month in format
         DD
@@ -39,7 +40,7 @@ def days_in_month(year_month):
 
     if int(year) % 4 == 0 and month == "02":
         return "29"
-    return month_days_general[month] 
+    return month_days_general[month]
 
 def next_month(year_month):
     """
@@ -47,7 +48,7 @@ def next_month(year_month):
 
     Args:
         year_month: String representing the month in format YYYYMM.
-    
+
     Returns:
         String representing the following month in format YYYYMM.
     """
@@ -56,7 +57,7 @@ def next_month(year_month):
 
     if month == "12":
         return str(int(year) + 1) + "01"
-    elif month == "09":
+    if month == "09":
         return year + "10"
     return year + month[0] + str(int(month[1]) + 1)
 
@@ -70,7 +71,7 @@ def request_articles(search_term, begin_date, end_date, api_key):
         begin_date: A string representing the start date in format YYYYMMDD.
         end_date: A string representing the end date in format YYYYMMDD.
         api_key: A string representing a NYTimes Developer API key.
-    
+
     Returns:
         The NYTimes Article Search API response for this search.
     """
@@ -86,7 +87,7 @@ def get_hits(response_):
 
     Args:
         request_: The results of a request from the NYTimes article seach API
-    
+
     Returns:
         A positive integer representing number of hits, as indicated by the
         API response
@@ -95,8 +96,8 @@ def get_hits(response_):
 
 def write_data_to_file(country_name, date, num_hits, headlines):
     """
-    Write collected data to csv file
-    
+    Write collected data to csv file for one month
+
     Args:
         country_name: a string representing the name of the country whos data
         is being collected
@@ -108,82 +109,90 @@ def write_data_to_file(country_name, date, num_hits, headlines):
     Returns:
         No return value
     """
-    information = pd.DataFrame([[country_name, date, num_hits, headlines]], columns = ['Country Name', 'MM-YYYY', 'Number of Hits', 'Month\'s Headlines'])
-    
+    information = pd.DataFrame([[country_name, date, num_hits, headlines]],
+                               columns = ['Country Name', 'MM-YYYY',
+                                          'Number of Hits',
+                                          'Month\'s Headlines'])
+
     filepath = f'CountryData/{country_name}_data.csv'
-    
+
     if path.exists(filepath):
         existing_data = pd.read_csv(filepath)
-    
+
         if existing_data.dropna().empty:
             information.to_csv(filepath, mode = 'w', header = True, index = False)
         else:
             information.to_csv(filepath, mode = 'a', header = False, index = False)
-            
+
     else:
         information.to_csv(filepath, mode = 'w', header = True, index = False)
-        
+
 def reset_data_entries(country_name):
     """
     Reset the data in a country's csv file so that the columns contain no data
-    
+
     Args:
         country_name: a string representing the name of the country whos file
         will be reset
     Returns:
         No return value
     """
-    new_table = pd.DataFrame([['', '', '', '']], columns = ['Country Name', 'MM-YYYY', 'Number of Hits', 'Month\'s Headlines'])
-    
-    new_table.to_csv(f'CountryData/{country_name}_data.csv', mode = 'w', header = True, index = False)
-    
+    new_table = pd.DataFrame([['', '', '', '']],
+                             columns = ['Country Name', 'MM-YYYY',
+                                        'Number of Hits',
+                                        'Sentiment Score (-1 to 1)',
+                                        'Magnitude', 'Month\'s Headlines'])
+
+    new_table.to_csv(f'CountryData/{country_name}_data.csv', mode = 'w',
+                     header = True, index = False)
+
 def headline_list_to_string(country_name, yearmonth):
     """
     Create one long string out of a list of strings, where the list of strings
     is one month's headlines
-    
+
     Args:
         country_name: a string representing the name of the country
         yearmonth: a string representing the month of interest, in YYYYMM format
-        
+
     Returns:
         headline_text: a string that is all of the headlines merged into one string
     """
     data_frame = pd.read_csv(f'CountryData/{country_name}_data.csv')
-    
+
     date = f'{yearmonth[4:]}-{yearmonth[0:4]}'
-    
+
     location = data_frame.index[data_frame['MM-YYYY'] == date][0]
-    
+
     headlines = data_frame['Month\'s Headlines'][location]
-    
+
     headline_text = headlines.strip("['']")
     headline_text = headline_text.replace("', '", " ")
     headline_text = headline_text.replace(chr(8217)+"s", "")#
     headline_text = headline_text.replace("'s", "")#
-    
+
     return headline_text
 
 def all_headlines_in_string(country_name):
     """
     Create one long string out of all the headlines collected for a country
     over the entire time frame
-    
+
     Args:
         country_name: a string representing the name of the country
     Returns:
         all_text: a string that contains all the headlines merged in one string
     """
     country_data = pd.read_csv(f'CountryData/{country_name}_data.csv')
-    
+
     month_headline_strings = []
-    
+
     for item in country_data['MM-YYYY']:
         year = item[3:]
         month = item[0:2]
-        
+
         month_headline_strings.append(headline_list_to_string(country_name, year + month))
-        
+
     all_text = " ".join(month_headline_strings)
-    
+
     return all_text
