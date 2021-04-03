@@ -82,11 +82,20 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
         request = request_articles(search_query, current_month + \
                 "01", current_month + days_in_month(current_month), api_key)
         num_hits = get_hits(request)
+        
+        month_all_info += [search_query, current_month, num_hits]
+        
+        if num_hits == 0:
+            month_all_info.append("")
+            headlines_and_hits.append(month_all_info)
+            current_month = next_month(current_month)
+            continue
+        
         num_pages = math.ceil(num_hits / 10)
         page_headlines = pyjq.all('.response .docs[] .headline .main',
                                   request.json())
 
-        month_all_info += [search_query, current_month, num_hits]
+        
         month_headlines += page_headlines
 
         time.sleep(6)
@@ -246,7 +255,7 @@ def create_bubble_chart(country_name):
 
     plt.figure(figsize = (math.ceil(num_entries / 2), 5))
     plt.scatter(x = country_data["MM-YYYY"], y = country_data["Sentiment Score (-1 to 1)"],
-                s = 50 * country_data["Number of Hits"], alpha = .5, color = 'purple')
+                s = 10 * country_data["Number of Hits"], alpha = .5, color = 'purple')
 
     plt.xticks(rotation = 45)
     plt.xlabel("Time Frame (MM-YYYY)", size = 15)
