@@ -119,7 +119,7 @@ def write_data_to_file(country_name, date, num_hits, headlines):
     if path.exists(filepath):
         existing_data = pd.read_csv(filepath)
 
-        if existing_data.dropna().empty:
+        if existing_data["Country Name"].dropna().empty:
             information.to_csv(filepath, mode = 'w', header = True, index = False)
         else:
             information.to_csv(filepath, mode = 'a', header = False, index = False)
@@ -137,7 +137,7 @@ def reset_data_entries(country_name):
     Returns:
         No return value
     """
-    new_table = pd.DataFrame([['', '', '', '']],
+    new_table = pd.DataFrame([['', '', '', '', '', '']],
                              columns = ['Country Name', 'MM-YYYY',
                                         'Number of Hits',
                                         'Sentiment Score (-1 to 1)',
