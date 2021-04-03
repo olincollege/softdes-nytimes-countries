@@ -1,5 +1,5 @@
 """
-This file deals with organizing the collected data and visualizing it
+This file deals with organizing the collected data and visualizing it.
 
 The functions in this file utilize functions from the helper file to
 make sure that the data is in the correct format to be read/written, and
@@ -103,13 +103,10 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
             for page in range(1, num_pages):
                 begin_date = current_month + "01"
                 end_date = current_month + days_in_month(current_month)
-                request = requests.get(f"https://api.nytimes.com/svc/search/" \
-                                       f"v2/articlesearch.json?" \
-                                       f"q={search_query}&fq=source:(\"The" \
-                                       f"New York Times\")&begin_date=" \
-                                       f"{begin_date}&end_date={end_date}&" \
-                                       f"page={page}&api-key={api_key}")
-
+                request =data_processing_helpers.request_articles(search_query,
+                                                                  begin_date,
+                                                                  end_date,
+                                                                  api_key)
                 page_headlines = pyjq.all('.response .docs[] .headline .main',
                                           request.json())
                 month_headlines += page_headlines

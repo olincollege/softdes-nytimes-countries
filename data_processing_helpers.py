@@ -1,9 +1,10 @@
 """
 This file contains helper functions for data collecting and data processing.
 
-The functions in this file deal with constructing NYTimes article seach API
+The functions in this file deal with constructing NYTimes article search API
 requests and writing the data collected from the responses into csv files.
 """
+
 from os import path
 import pyjq
 import pandas as pd
@@ -33,7 +34,7 @@ def days_in_month(year_month):
 
     Returns:
         A two-character string for the number of days in that month in format
-        DD
+        DD.
     """
     year = year_month[0:4]
     month = year_month[4:]
@@ -44,13 +45,13 @@ def days_in_month(year_month):
 
 def next_month(year_month):
     """
-    Give the month following the input month
+    Give the month following the input month.
 
     Args:
         year_month: String representing the month in format YYYYMM.
 
     Returns:
-        String representing the following month in format YYYYMM.
+        A string representing the following month in format YYYYMM.
     """
     year = year_month[0:4]
     month = year_month[4:]
@@ -61,10 +62,10 @@ def next_month(year_month):
         return year + "10"
     return year + month[0] + str(int(month[1]) + 1)
 
-def request_articles(search_term, begin_date, end_date, api_key):
+def request_articles(search_term, begin_date, end_date, api_key, page=1):
     """
-    Gets NYTimes Article Search API response for given search term and date
-    range
+    Gets NYTimes Article Search API response for given search term, date range,
+    and API key. Can also provide a page of search results, but one is default.
 
     Args:
         search_term: A string representing the search term.
@@ -73,41 +74,41 @@ def request_articles(search_term, begin_date, end_date, api_key):
         api_key: A string representing a NYTimes Developer API key.
 
     Returns:
-        The NYTimes Article Search API response for this search.
+        A Response for this request in NYTimes Article Search API.
     """
     return requests.get(f"https://api.nytimes.com/svc/search/v2/" \
                         f"articlesearch.json?q={search_term}&fq=" \
                         f"source:(\"The New York Times\")&begin_" \
                         f"date={begin_date}&end_date={end_date}&" \
-                        f"api-key={api_key}")
+                        f"page={page}&api-key={api_key}")
 
 def get_hits(response_):
     """
     Finds number of results for a NYTimes API request.
 
     Args:
-        request_: The results of a request from the NYTimes article seach API
+        response_: A Response from the NYTimes article search API.
 
     Returns:
         A positive integer representing number of hits, as indicated by the
-        API response
+        API response.
     """
     return pyjq.all(".response .meta .hits", response_.json())[0]
 
 def write_data_to_file(country_name, date, num_hits, headlines):
     """
-    Write collected data to csv file for one month
+    Write collected data to csv file for one month.
 
     Args:
-        country_name: a string representing the name of the country whos data
+        country_name: a string representing the name of the country whose data
         is being collected
         date: a string representing the year and month for which the hits are
         collected
-        num_hits: an int representing the number of hits from a nytimes article
+        num_hits: an int representing the number of hits from a NYTimes article
         search api for a given country and time period
         headlines: a list containing all of the headlines for the month
     Returns:
-        No return value
+        None.
     """
     information = pd.DataFrame([[country_name, date, num_hits, headlines]],
                                columns = ['Country Name', 'MM-YYYY',
@@ -132,7 +133,7 @@ def reset_data_entries(country_name):
     Reset the data in a country's csv file so that the columns contain no data
 
     Args:
-        country_name: a string representing the name of the country whos file
+        country_name: a string representing the name of the country whose file
         will be reset
     Returns:
         No return value
@@ -146,21 +147,24 @@ def reset_data_entries(country_name):
     new_table.to_csv(f'CountryData/{country_name}_data.csv', mode = 'w',
                      header = True, index = False)
 
-def headline_list_to_string(country_name, yearmonth):
+def headline_list_to_string(country_name, year_month):
     """
     Create one long string out of a list of strings, where the list of strings
-    is one month's headlines
+    is one month's headlines.
+
+    Accesses csv to take one month's headlines and remove quotes, commas, and
+    other list artifacts.
 
     Args:
-        country_name: a string representing the name of the country
-        yearmonth: a string representing the month of interest, in YYYYMM format
+        country_name: A string representing the name of the country.
+        year_month: A string representing the month, in YYYYMM format.
 
     Returns:
-        headline_text: a string that is all of the headlines merged into one string
+        headline_text: A string that contains one month's headlines.
     """
     data_frame = pd.read_csv(f'CountryData/{country_name}_data.csv')
 
-    date = f'{yearmonth[4:]}-{yearmonth[0:4]}'
+    date = f'{year_month[4:]}-{year_month[0:4]}'
 
     location = data_frame.index[data_frame['MM-YYYY'] == date][0]
 
@@ -176,12 +180,15 @@ def headline_list_to_string(country_name, yearmonth):
 def all_headlines_in_string(country_name):
     """
     Create one long string out of all the headlines collected for a country
-    over the entire time frame
+    over the entire time frame.
+
+    Accesses csv file's Headlines column to get one string of all headlines
+    in all rows.
 
     Args:
-        country_name: a string representing the name of the country
+        country_name: A string representing the name of the country.
     Returns:
-        all_text: a string that contains all the headlines merged in one string
+        all_text: A string that contains all the headlines merged in one string.
     """
     country_data = pd.read_csv(f'CountryData/{country_name}_data.csv')
 
