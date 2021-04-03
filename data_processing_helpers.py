@@ -167,6 +167,9 @@ def headline_list_to_string(country_name, year_month):
     date = f'{year_month[4:]}-{year_month[0:4]}'
 
     location = data_frame.index[data_frame['MM-YYYY'] == date][0]
+    
+    if data_frame["Number of Hits"][location] == 0:
+        return ""
 
     headlines = data_frame['Month\'s Headlines'][location]
 

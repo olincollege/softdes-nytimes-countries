@@ -103,10 +103,8 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
             for page in range(1, num_pages):
                 begin_date = current_month + "01"
                 end_date = current_month + days_in_month(current_month)
-                request =data_processing_helpers.request_articles(search_query,
-                                                                  begin_date,
-                                                                  end_date,
-                                                                  api_key)
+                request = request_articles(search_query, begin_date, end_date,
+                                           api_key)
                 page_headlines = pyjq.all('.response .docs[] .headline .main',
                                           request.json())
                 month_headlines += page_headlines
