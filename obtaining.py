@@ -202,20 +202,34 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
         request = request_articles(search_query, current_month + \
                 "01", current_month + days_in_month(current_month), api_key)
         num_hits = get_hits(request)
+<<<<<<< HEAD
         
         month_all_info += [search_query, current_month, num_hits]
         
+=======
+
+        month_all_info += [search_query, current_month, num_hits]
+
+>>>>>>> 0d38cb5cc47ff68461c26bcc5cb98faa19aaa101
         if num_hits == 0:
             month_all_info.append("")
             headlines_and_hits.append(month_all_info)
             current_month = next_month(current_month)
             continue
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 0d38cb5cc47ff68461c26bcc5cb98faa19aaa101
         num_pages = math.ceil(num_hits / 10)
         page_headlines = pyjq.all('.response .docs[] .headline .main',
                                   request.json())
 
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 0d38cb5cc47ff68461c26bcc5cb98faa19aaa101
         month_headlines += page_headlines
 
         time.sleep(6)

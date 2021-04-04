@@ -10,11 +10,11 @@ import pandas as pd
 import pyjq
 import requests
 
-PATH_LILA = "api-keys/google-api-key-lila"
+#PATH_LILA = "api-keys/google-api-key-lila"
 PATH_ALEX = "/home/softdes/Desktop/google-api-key"
 API_PATH = "https://language.googleapis.com/v1/documents:analyzeSentiment?key="
 
-with open(os.path.abspath(PATH_LILA), "r") as f:
+with open(os.path.abspath(PATH_ALEX), "r") as f:
     api_key = f.readline()
 
 #Headline to String Functions
