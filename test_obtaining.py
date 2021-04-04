@@ -1,5 +1,5 @@
 import pytest
-from data_processing_helpers import days_in_month, next_month, headline_list_to_string, all_headlines_in_string
+from obtaining import days_in_month, next_month
 
 DAYS_IN_MONTH_CASES = [
     ("200002", "29"), #Tests that leap years have 29 days in February
@@ -22,7 +22,3 @@ NEXT_MONTH_CASES = [
 @pytest.mark.parametrize("test_input,expected", NEXT_MONTH_CASES)
 def test_next_month(test_input, expected):
     assert next_month(test_input) == expected
-
-#HEADLINE_LIST_TO_STRING_CASES = [
-#    ([])
-#]
