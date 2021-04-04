@@ -83,20 +83,20 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
         request = request_articles(search_query, current_month + \
                 "01", current_month + days_in_month(current_month), api_key)
         num_hits = get_hits(request)
-        
+
         month_all_info += [search_query, current_month, num_hits]
-        
+
         if num_hits == 0:
             month_all_info.append("")
             headlines_and_hits.append(month_all_info)
             current_month = next_month(current_month)
             continue
-        
+
         num_pages = math.ceil(num_hits / 10)
         page_headlines = pyjq.all('.response .docs[] .headline .main',
                                   request.json())
 
-        
+
         month_headlines += page_headlines
 
         time.sleep(6)
@@ -167,19 +167,19 @@ def create_scatter_plot(country_name):
 
     fig, ax = plt.subplots(figsize = (20, 10))
     ax.scatter(country_data['MM-YYYY'], country_data['Number of Hits'])
-    
+
     ax.set_xlabel('Time Frame (MM-YYYY)', fontsize = 20)
     ax.set_ylabel('Number of Hits', fontsize = 20)
     ax.set_title(f'Number of Hits in NYTimes Articles per Month for ' \
-              f'{country_name} from {begin_date} to {end_date}', fontsize = 25) 
-    
+              f'{country_name} from {begin_date} to {end_date}', fontsize = 25)
+
     ax.xaxis.set_major_locator(plt.MaxNLocator(30))
     ax.xaxis.labelpad = 30
     ax.yaxis.labelpad = 30
 
     plt.xticks(rotation = 45)
 
-    
+
 def create_word_cloud_one_month(country_name, yearmonth):
     """
     Create a wordcloud based on the headlines collected about the country for
@@ -232,12 +232,12 @@ def create_word_cloud_all(country_name):
     plt.figure(figsize = (20, 20))
     plt.axis('off')
     plt.imshow(colored_cloud)
-    
+
 def create_word_cloud_certain_months(country_name, start_month, end_month):
     """
     Create a wordcloud based on the headlines collected about a country for
     a set range of months
-    
+
     Args:
         country_name: a string representing the name of the country for which
         to create the wordcloud
@@ -246,15 +246,15 @@ def create_word_cloud_certain_months(country_name, start_month, end_month):
         end_month: a string representing the end month of headliens in YYYYMM
         format
     Returns:
-        No return value   
+        No return value
     """
     country_dataframe = pd.read_csv(f"CountryData/{country_name}_data.csv")
     date_start = f"{start_month[4:]}-{start_month[0:4]}"
     date_end = f"{end_month[4:]}-{end_month[0:4]}"
-    
+
     begin_index = country_dataframe.index[country_dataframe['MM-YYYY'] == date_start][0]
     end_index = country_dataframe.index[country_dataframe["MM-YYYY"] == date_end][0]
-    
+
     text = ""
     for index in range(begin_index, end_index + 1):
         month = country_dataframe["MM-YYYY"][index][0:2]
@@ -262,7 +262,7 @@ def create_word_cloud_certain_months(country_name, start_month, end_month):
         date_arg = year + month
         text += headline_list_to_string(country_name, date_arg)
         text += " "
-        
+
     num_words = len(text.split())
 
     background_flag_mask = np.array(Image.open(f"CountryFlags/{country_name}_flag.png"))
@@ -292,17 +292,17 @@ def create_bubble_chart(country_name):
         name = country_name[: -7]
     else:
         name = country_name
-    
+
     country_data = pd.read_csv(f"CountryData/{country_name}_data.csv")
     num_entries = len(country_data["Country Name"])
 
     begin_date = country_data["MM-YYYY"][0]
     end_date = country_data["MM-YYYY"][num_entries - 1]
-    
+
     fig, ax = plt.subplots(figsize = (20, 10))
-    scatterplot = ax.scatter(country_data['MM-YYYY'], country_data["Sentiment Score (-1 to 1)"], 
+    scatterplot = ax.scatter(country_data['MM-YYYY'], country_data["Sentiment Score (-1 to 1)"],
               s = 10 * country_data["Number of Hits"], alpha = .5, color = 'purple')
-    
+
     ax.set_xlabel('Time Frame (MM-YYYY)', fontsize = 20)
     ax.set_ylabel('Sentiment Score (-1 to 1)', fontsize = 20)
     ax.set_title(f"New York Times Mentions and Sentiment for {name} from " \
@@ -310,9 +310,9 @@ def create_bubble_chart(country_name):
 
     handles, labels = scatterplot.legend_elements(prop = "sizes", alpha = 0.5, color = "purple", num = 4)
     ax.legend(handles, labels, title = "Number of Hits Times Ten", labelspacing = 3, handletextpad = 5, borderpad = 3, bbox_to_anchor = (1, 1))
-    
+
     ax.xaxis.set_major_locator(plt.MaxNLocator(30))
     ax.xaxis.labelpad = 30
     ax.yaxis.labelpad = 30
-    
+
     plt.xticks(rotation = 45)
