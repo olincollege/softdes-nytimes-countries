@@ -1,5 +1,4 @@
-Country Name,MM-YYYY,Number of Hits,Month's Headlines
-Test,01-2018,14,"['Test Headline', 'Test "Headline" Two', 'Here's A Test Headline']"
-Test,02-2018,10,"['The Childhood Journeys That Made Them ‘Dreamers’', 'Russia Vetoes U.N. Resolution to Pressure Iran Over Yemen Missiles', 'Ecuador Votes to Bring Back Presidential Term Limits']"
-Test,03-2018,10,"['Facebook to End News Feed Experiment in 6 Countries That Magnified Fake News', 'Pope Rejects Call for Apology to Canada’s Indigenous People']"
-Test,04-2018,13,"['How Big Forests Solve Global Problems', 'The 52 Places Traveler: The Paradox of the Women of La Paz']"
+Country Name,MM-YYYY,Number of Hits,Sentiment Score (-1 to 1),Magnitude,Month's Headlines
+test,01-2018,14,0.0,1.1,"['Test Headline', 'Test headline 2']"
+test,02-2018,10,0.0,1.9,"['Headlines for testing']"
+test,03-2018,10,0.0,1.7,"['More testing']"
