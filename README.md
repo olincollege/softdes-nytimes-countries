@@ -1,6 +1,6 @@
 # softdes-nytimes-countries
 
-These files focus on looking at how the New York Times covers regime changes related to U.S.-intervention.
+These files focus on looking at how the New York Times covers regime changes related to U.S. intervention and influence.
 The full report can be found in `ComputationalEssay.ipynb`. 
 
 `obtaining.py` has functions that can be used to obtain data about the number of keyword hits and headlines each month from New York Times Article Search API; it can also write them to a cvs. 
@@ -15,7 +15,7 @@ Collected data for each country is stored in a csv in `CountryData` with corresp
 To use the all functions, you must do all of the following:
 1. Install `pyjq` library to use `processing.py` and `obtaining.py`.
     - Make sure that it can build the wheel: `python -m pip install --upgrade pip setuptools wheel`
-    - Make sure that you have all of the following packages: `flex`, `bison`, `libtool`, `make`, `automake`, and `autoconfig`. These can be installed with `sudo apt install <library>`.
+    - Make sure that you have all of the following packages: `flex`, `bison`, `libtool`, `make`, `automake`, and `autoconfig`. These can be installed with `sudo apt install <package>`.
     - Install `pyjq`: `pip install pyjq` 
 2. Make a [New York Times Developer](https://developer.nytimes.com/) account and create an API key that can access the [Article Search API](https://developer.nytimes.com/docs/articlesearch-product/1/overview). 
     - This key as a string should be used as an input to any function in `obtaining.py` that calls for an API key. 
