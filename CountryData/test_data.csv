@@ -1,4 +1,4 @@
 Country Name,MM-YYYY,Number of Hits,Sentiment Score (-1 to 1),Magnitude,Month's Headlines
 test,01-2018,14,0.0,1.1,"['Test Headline', 'Test headline 2']"
-test,02-2018,10,0.0,1.9,"['Headlines for testing']"
+test,02-2018,10,0.0,1.9,"['Here's 'a' headline']"
 test,03-2018,10,0.0,1.7,"['More testing']"
