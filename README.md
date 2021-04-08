@@ -20,9 +20,10 @@ To use the all functions, you must do all of the following:
 2. Make a [New York Times Developer](https://developer.nytimes.com/) account and create an API key that can access the [Article Search API](https://developer.nytimes.com/docs/articlesearch-product/1/overview). 
     - This key as a string should be used as an input to any function in `obtaining.py` that calls for an API key. 
 3. Make a free [Google Cloud account](https://cloud.google.com/) and make an API key that can access the [Natural Language API](https://cloud.google.com/natural-language). These steps are necessary to use `processing.py`.
-    - In `processing.py` on line 12, add a variable `PATH_<YOUR NAME>` that has the path to your Google Cloud API key in the first line of a text file. 
-    - Change line 17 to use your API variable: `with open(os.path.abspath(PATH_<YOUR_NAME>), "r") as f:`. 
-4. If running a code block in computational essay, make sure to uncomment any lines of code as well as read directions for adding API key.
+    - In `processing.py`, uncomment line 10 (`import os`). Uncomment lines 21 and 22 as well.
+    - In `processing.py` on line 19, add a variable `PATH_<YOUR NAME>` that has a string for your path to your Google Cloud API key in the first line of a text file. 
+    - Change line 21 to use your API variable: `with open(os.path.abspath(PATH_<YOUR_NAME>), "r") as f:`. 
+4. If running a code block in computational essay, make sure to uncomment any lines of code as well as read directions for adding API keys.
 
 ## Generating Plots
 You should not need to do anything besides run the computational essay to generate plots. The plot generating functions can be found in `visualization.py`. If you would like to create a new plot, check the docstrings for specifics.

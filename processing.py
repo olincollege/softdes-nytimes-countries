@@ -4,10 +4,10 @@ This file deals with processing the collected data.
 These functions access the csv file to get headlines and use Google Cloud
 Natural Language API to get sentiment analysis.
 A google cloud account and API key is needed to run some of the functions in
-this module
+this module.
 """
 import json
-import os
+#import os
 import pandas as pd
 import pyjq
 import requests
@@ -15,9 +15,11 @@ import requests
 #PATH_LILA = "api-keys/google-api-key-lila"
 #PATH_ALEX = "/home/softdes/Desktop/google-api-key"
 API_PATH = "https://language.googleapis.com/v1/documents:analyzeSentiment?key="
+API_KEY = ""
+
 
 #with open(os.path.abspath(PATH_ALEX), "r") as f:
-#    api_key = f.readline()
+#    API_KEY = f.readline()
 
 #Headline to String Functions
 def headline_list_to_string(country_name, year_month):
@@ -104,7 +106,7 @@ def request_sentiment(text):
     "encodingType": "UTF32"
     }
 
-    response = requests.post(API_PATH + api_key, data=json.dumps(body))
+    response = requests.post(API_PATH + API_KEY, data=json.dumps(body))
     return response
 
 def find_sentiment(response):
