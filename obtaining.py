@@ -1,8 +1,18 @@
+"""
+This module deals with collecting data from the NYT Article Search API as well
+as writing that information to csv files.
+
+There are helper functions included towards the top of this module that help
+with iterating through months/days for API calls that span multiple months.
+An NYT developer API key for the article search API is required to run some
+of the functions in this module.
+"""
 import math
-import pyjq
+from os import path
+import time
 import pandas as pd
 import requests
-import time
+import pyjq
 
 month_days_general = {
     "01": "31",
@@ -204,7 +214,7 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
         request = request_articles(search_query, current_month + \
                 "01", current_month + days_in_month(current_month), api_key)
         num_hits = get_hits(request)
-        
+
         month_all_info += [search_query, current_month, num_hits]
 
         if num_hits == 0:
@@ -221,7 +231,7 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
 
         time.sleep(6)
         if num_pages >= 1:
-            for page in range(1, num_pages):
+            for _ in range(1, num_pages):
                 begin_date = current_month + "01"
                 end_date = current_month + days_in_month(current_month)
                 request = request_articles(search_query, begin_date, end_date,

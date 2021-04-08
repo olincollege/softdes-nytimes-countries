@@ -1,3 +1,6 @@
+"""
+This module deals with testing some of the functions in the obtaining module.
+"""
 import pytest
 from obtaining import days_in_month, next_month
 
@@ -10,6 +13,13 @@ DAYS_IN_MONTH_CASES = [
 
 @pytest.mark.parametrize("test_input,expected", DAYS_IN_MONTH_CASES)
 def test_days_of_month(test_input, expected):
+    """
+    Test that the days_in_month function returns the appropriate number of days
+    for unique cases.
+
+    The specific tests are commented above next to the variable
+    DAYS_IN_MONTH_CASES.
+    """
     assert days_in_month(test_input) == expected
 
 NEXT_MONTH_CASES = [
@@ -21,4 +31,11 @@ NEXT_MONTH_CASES = [
 
 @pytest.mark.parametrize("test_input,expected", NEXT_MONTH_CASES)
 def test_next_month(test_input, expected):
+    """
+    Test that the next_month function returns the appropriate month following
+    the input.
+
+    The specific tests are commented above next to the variable
+    NEXT_MONTH_CASES.
+    """
     assert next_month(test_input) == expected

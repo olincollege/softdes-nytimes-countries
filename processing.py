@@ -3,6 +3,8 @@ This file deals with processing the collected data.
 
 These functions access the csv file to get headlines and use Google Cloud
 Natural Language API to get sentiment analysis.
+A google cloud account and API key is needed to run some of the functions in
+this module
 """
 import json
 import os
@@ -39,7 +41,7 @@ def headline_list_to_string(country_name, year_month):
     date = f'{year_month[4:]}-{year_month[0:4]}'
 
     location = data_frame.index[data_frame['MM-YYYY'] == date][0]
-    
+
     if data_frame["Number of Hits"][location] == 0:
         return ""
 
@@ -87,8 +89,8 @@ def request_sentiment(text):
     Sends HTTP post to Google Cloud and receives Response.
 
     Args:
-        text: A string to have its context 
-    
+        text: A string to have its context
+
     Returns:
         A Response from Google Natural Language API.
     """
@@ -111,7 +113,7 @@ def find_sentiment(response):
 
     Args:
         response: A Response from Google Natural Language API from posting.
-    
+
     Returns:
         A list containing sentiment score and magnitude score for the response.
     """
@@ -140,7 +142,7 @@ def sentiment_and_magnitude_to_csv(country_name):
     for item in country_dataframe["MM-YYYY"]:
         year = item[3:]
         month = item[0:2]
-        text = data_processing_helpers.headline_list_to_string(country_name, year + month)
+        text = headline_list_to_string(country_name, year + month)
         analysis = find_sentiment(request_sentiment(text))
 
         sentiment_scores.append(analysis[0])
