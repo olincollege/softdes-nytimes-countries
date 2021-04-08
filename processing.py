@@ -11,11 +11,11 @@ import pyjq
 import requests
 
 #PATH_LILA = "api-keys/google-api-key-lila"
-PATH_ALEX = "/home/softdes/Desktop/google-api-key"
+#PATH_ALEX = "/home/softdes/Desktop/google-api-key"
 API_PATH = "https://language.googleapis.com/v1/documents:analyzeSentiment?key="
 
-with open(os.path.abspath(PATH_ALEX), "r") as f:
-    api_key = f.readline()
+#with open(os.path.abspath(PATH_ALEX), "r") as f:
+#    api_key = f.readline()
 
 #Headline to String Functions
 def headline_list_to_string(country_name, year_month):
@@ -33,6 +33,7 @@ def headline_list_to_string(country_name, year_month):
     Returns:
         headline_text: A string that contains one month's headlines.
     """
+
     data_frame = pd.read_csv(f'CountryData/{country_name}_data.csv')
 
     date = f'{year_month[4:]}-{year_month[0:4]}'
@@ -64,6 +65,7 @@ def all_headlines_in_string(country_name):
     Returns:
         all_text: A string that contains all the headlines merged in one string.
     """
+
     country_data = pd.read_csv(f'CountryData/{country_name}_data.csv')
 
     month_headline_strings = []
@@ -86,7 +88,11 @@ def request_sentiment(text):
 
     Args:
         text: A string to have its context 
+    
+    Returns:
+        A Response from Google Natural Language API.
     """
+
     body = {
         "document": {
             "type": "PLAIN_TEXT",
@@ -102,7 +108,14 @@ def request_sentiment(text):
 def find_sentiment(response):
     """
     Takes Google Cloud response and outputs sentiment and magnitude as list.
+
+    Args:
+        response: A Response from Google Natural Language API from posting.
+    
+    Returns:
+        A list containing sentiment score and magnitude score for the response.
     """
+
     sentiment = pyjq.all(".documentSentiment .score", response.json())[0]
     magnitude = pyjq.all(".documentSentiment .magnitude", response.json())[0]
     return [sentiment, magnitude]
@@ -110,14 +123,15 @@ def find_sentiment(response):
 def sentiment_and_magnitude_to_csv(country_name):
     """
     Conduct sentiment analysis on monthly headlines for a given country and
-    update the country's data file with the corresponding scores
+    update the country's data file with the corresponding scores.
 
     Args:
-        country_name: a string representing the name of the country whose
+        country_name: A string representing the name of the country whose
         headlines will be analyzed
     Return:
-        No return value
+        None.
     """
+
     country_dataframe = pd.read_csv(f'CountryData/{country_name}_data.csv')
 
     sentiment_scores = []

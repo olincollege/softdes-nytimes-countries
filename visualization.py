@@ -7,14 +7,15 @@ from processing import all_headlines_in_string, headline_list_to_string
 
 def create_scatter_plot(country_name):
     """
-    Display a scatter plot of hits per month for a country
+    Display a scatter plot of hits per month for a country using matplotlib.
 
     Args:
-        country_name: a string that is the name of the country for which to
+        country_name: A string that is the name of the country for which to
         visualize number of hits
     Returns:
-        No return value
+        None.
     """
+
     country_data = pd.read_csv(f'CountryData/{country_name}_data.csv')
 
     num_entries = len(country_data['MM-YYYY'])
@@ -39,16 +40,17 @@ def create_scatter_plot(country_name):
 def create_word_cloud_one_month(country_name, yearmonth):
     """
     Create a wordcloud based on the headlines collected about the country for
-    the given month
+    the given month.
 
     Args:
-        country_name: a string representing the name of the country for which
-        to create the wordcloud
-        yearmonth: a string representing the month for which to get headlines,
-        in YYYYMM format
+        country_name: A string representing the name of the country for which
+        to create the wordcloud.
+        yearmonth: A string representing the month for which to get headlines,
+        in YYYYMM format.
     Returns:
-        No return value
+        None.
     """
+
     text = headline_list_to_string(country_name, yearmonth)
     num_words = len(text.split())
 
@@ -67,18 +69,19 @@ def create_word_cloud_one_month(country_name, yearmonth):
 def create_word_cloud_certain_months(country_name, start_month, end_month):
     """
     Create a wordcloud based on the headlines collected about a country for
-    a set range of months
+    a set range of months.
 
     Args:
-        country_name: a string representing the name of the country for which
-        to create the wordcloud
-        start_month: a string representing the start month of headlines in
-        YYYYMM format
-        end_month: a string representing the end month of headliens in YYYYMM
-        format
+        country_name: A string representing the name of the country for which
+        to create the wordcloud.
+        start_month: A string representing the start month of headlines in
+        YYYYMM format.
+        end_month: A string representing the end month of headliens in YYYYMM
+        format.
     Returns:
-        No return value
+        None.
     """
+
     country_dataframe = pd.read_csv(f"CountryData/{country_name}_data.csv")
     date_start = f"{start_month[4:]}-{start_month[0:4]}"
     date_end = f"{end_month[4:]}-{end_month[0:4]}"
@@ -110,14 +113,15 @@ def create_word_cloud_certain_months(country_name, start_month, end_month):
 
 def create_word_cloud_all(country_name):
     """
-    Create a wordcloud based on all the headlines collected about the country
+    Create a wordcloud based on all the headlines collected about the country.
 
     Args:
-        country_name: a string representing the name of the country for which
-        to create the wordcloud
+        country_name: A string representing the name of the country for which
+        to create the wordcloud.
     Returns:
-        No return value
+        None.
     """
+
     text = all_headlines_in_string(country_name)
     num_words = len(text.split())
 
@@ -136,14 +140,15 @@ def create_word_cloud_all(country_name):
 def create_bubble_chart(country_name):
     """
     Create a bubble chart for a country based on number of hits and sentiment
-    score over time
+    score over time.
 
     Args:
-        country_name: a string representing the name of the country for which
-        to create a chart
+        country_name: A string representing the name of the country for which
+        to create a chart.
     Returns:
-        No return value
+        None.
     """
+    
     if country_name[-7 :] == "_subset":
         name = country_name[: -7]
     else:

@@ -66,6 +66,8 @@ def request_articles(search_term, begin_date, end_date, api_key, page=1):
         begin_date: A string representing the start date in format YYYYMMDD.
         end_date: A string representing the end date in format YYYYMMDD.
         api_key: A string representing a NYTimes Developer API key.
+        page: An int representing page number for the results of the search.
+              Default is one. (Optional).
 
     Returns:
         A Response for this request in NYTimes Article Search API.
@@ -94,13 +96,13 @@ def write_data_to_file(country_name, date, num_hits, headlines):
     Write collected data to csv file for one month.
 
     Args:
-        country_name: a string representing the name of the country whose data
+        country_name: A string representing the name of the country whose data
         is being collected
-        date: a string representing the year and month for which the hits are
+        date: A string representing the year and month for which the hits are
         collected
-        num_hits: an int representing the number of hits from a NYTimes article
+        num_hits: An int representing the number of hits from a NYTimes article
         search api for a given country and time period
-        headlines: a list containing all of the headlines for the month
+        headlines: A list containing all of the headlines for the month
     Returns:
         None.
     """
@@ -124,13 +126,13 @@ def write_data_to_file(country_name, date, num_hits, headlines):
 
 def reset_data_entries(country_name):
     """
-    Reset the data in a country's csv file so that the columns contain no data
+    Reset the data in a country's csv file so that the columns contain no data.
 
     Args:
-        country_name: a string representing the name of the country whose file
-        will be reset
+        country_name: A string representing the name of the country whose file
+        will be reset.
     Returns:
-        No return value
+        None
     """
     new_table = pd.DataFrame([['', '', '', '', '', '']],
                              columns = ['Country Name', 'MM-YYYY',
@@ -146,16 +148,16 @@ def monthly_hits(search_term, begin_month, end_month, api_key):
     Gives hits per month for a search term in a time period (inclusive).
 
     Args:
-        search_term: a string representing the search query
+        search_term: String representing the search query (country name).
         begin_month: String representing the starting month in the format
         YYYYMM.
         end_month: String representing the ending month in the format
         YYYYMM.
-        api_key: A string representing a NYTimes Developer API key.
+        api_key: String representing a NYTimes Developer API key.
 
     Returns:
-        search_date_hits: a list containing integers representing the monthly
-        number of hits for the search term
+        search_date_hits: A list containing integers representing the monthly
+        number of hits for the search term.
     """
     search_date_hits = []
     i = 0
@@ -181,17 +183,17 @@ def collect_headlines_and_hits(search_query, yyyymm_start, yyyymm_end, api_key):
     Collect the headlines and hits over a period of time for a given search
 
     Args:
-        search_query: a string that represents the search term
-        yyyymm_start: a string that represents the start date in the YYYYMM
-        format
-        yyyymm_end: a string that represents the end date in the YYYYMM
-        format
-        api_key: a string that represents the user's public api key
+        search_query: A string that represents the search term.
+        yyyymm_start: A string that represents the start date in the YYYYMM
+        format.
+        yyyymm_end: A string that represents the end date in the YYYYMM
+        format.
+        api_key: A string that represents the user's public api key.
 
     Returns:
         headlines_and_hits: a list containing a list of the following info:
         ['country name', 'month range', 'hits', 'headlines'] for each month
-        indicated by the time frame for the inputs
+        indicated by the time frame for the inputs.
     """
     headlines_and_hits = []
     current_month = yyyymm_start
@@ -242,16 +244,16 @@ def write_hits_and_headlines_to_file(search_term, begin_month, end_month, api_ke
     csv file, with a new row for each month's info
 
     Args:
-        search_term: a string representing the search query
+        search_term: String representing the search query.
         begin_month: String representing the start date in the format
         YYYYMM.
         end_month: String representing the end date in the format
         YYYYMM.
-        api_key: a string representing a NYTimes Developer API key.
+        api_key: String representing a NYTimes Developer API key.
 
     Returns:
         search_date_hits_and_headlines: A list containing the info that was
-        written to the csv file
+        written to the csv file.
     """
     search_date_hits_and_headlines = collect_headlines_and_hits(search_term,
                                                                 begin_month,
